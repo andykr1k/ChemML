@@ -1,6 +1,7 @@
 appnope==0.1.4
 asttokens==2.4.1
 CBFV==1.1.0
+cloudpickle==3.0.0
 comm==0.2.2
 contourpy==1.2.1
 cycler==0.12.1
@@ -17,10 +18,12 @@ joblib==1.4.2
 jupyter_client==8.6.2
 jupyter_core==5.7.2
 kiwisolver==1.4.5
+llvmlite==0.43.0
 matplotlib==3.9.2
 matplotlib-inline==0.1.7
 nest-asyncio==1.6.0
-numpy==2.1.0
+numba==0.60.0
+numpy==2.0.0
 packaging==24.1
 pandas==2.2.2
 parso==0.8.4
@@ -42,7 +45,9 @@ pyzmq==26.1.1
 scikit-learn==1.5.1
 scipy==1.14.0
 seaborn==0.13.2
+shap==0.46.0
 six==1.16.0
+slicer==0.0.8
 stack-data==0.6.3
 tenacity==9.0.0
 threadpoolctl==3.5.0
