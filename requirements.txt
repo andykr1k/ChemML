@@ -59,3 +59,6 @@ typing_extensions==4.12.2
 tzdata==2024.1
 wcwidth==0.2.13
 xgboost==2.1.1
+periodictable
+beautifulsoup4
+requests
