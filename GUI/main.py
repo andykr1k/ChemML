@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdi
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QFont, QColor, QPalette
 from utils import createCombinations, createPOSCARs, generateCIFs, read_file
-
+import os
 
 class HomePage(QWidget):
     def __init__(self, stacked_widget):
@@ -202,14 +202,13 @@ class ChemMLPage(QWidget):
 
     def createCombinations(self):
         formula = self.baseInput.text().strip()
-        result = createCombinations(formula)
+        result, self.combinations_file = createCombinations(formula)
         self.logActivity(f"Combinations created for formula: {formula}")
         QMessageBox.information(self, "Combinations Created", f"{result}")
 
     def createPOSCARs(self):
         if hasattr(self, 'poscar_file_path'):
-            content = read_file(self.poscar_file_path)
-            result = createPOSCARs(content)
+            result = createPOSCARs(self.poscar_file_path, self.combinations_file)
             self.logActivity("POSCARs created from uploaded file.")
             QMessageBox.information(
                 self, "POSCARs Created", f"{result}")
@@ -220,10 +219,17 @@ class ChemMLPage(QWidget):
 
     def generateCIFs(self):
         if hasattr(self, 'poscar_file_path'):
-            content = read_file(self.poscar_file_path)
-            result = generateCIFs(content)
+            count = 0
+            for file in os.listdir("./output/"):
+                if "POSCAR" in file:
+                    formula = file.split(" ")[0]
+                    content = read_file("./output/"+file)
+                    generateCIFs(formula, content)
+                    self.logActivity(
+                        formula + " CIF generated from POSCAR content!")
+                    count += 1
+            QMessageBox.information(self, "CIFs Generated", f"{count} CIFs generated!")
             self.logActivity("CIFs generated from POSCAR content.")
-            QMessageBox.information(self, "CIFs Generated", f"{result}")
         else:
             self.logActivity("Failed to generate CIFs: No file selected.")
             QMessageBox.warning(self, "No File Selected",

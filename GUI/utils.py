@@ -124,6 +124,7 @@ def generate_cif_from_poscar(poscar):
 
 def createCombinations(formula):
     res = parse_formula(formula)
+    file_name = formula + '_structured_formula_combinations.csv'
     combinations_per_element = []
     for idx, (element, count) in enumerate(res):
         is_first_element = (idx == 0)
@@ -139,7 +140,6 @@ def createCombinations(formula):
     for formula in structured_formula_combinations:
         unique_formulas.add(formula)
     os.makedirs('./output', exist_ok=True)
-    file_name = formula + '_structured_formula_combinations.csv'
     with open('./output/'+file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Formula'])
@@ -147,10 +147,10 @@ def createCombinations(formula):
             writer.writerow([formula])
     msg = f"Saved {len(unique_formulas)} unique formulas to " + file_name + " in output folder!"
     print(msg)
-    return msg
+    return msg, file_name
 
 def createPOSCARs(original_poscar_file, combinations_file):
-    combinations = read_file_exclude_first_line(combinations_file)
+    combinations = read_file_exclude_first_line("./output/"+ combinations_file)
     for formula in combinations:
         parsed_formula = parse_formula(formula)
         element_line = ""
@@ -163,7 +163,7 @@ def createPOSCARs(original_poscar_file, combinations_file):
         file_path = './output/' + formula + " POSCAR"
         with open(file_path, 'w') as file:
             file.write(new_poscar)
-    msg = f"Saved {len(parsed_formula)} POSCARs to output folder!"
+    msg = f"Saved {len(combinations)} POSCARs to output folder!"
     print(msg)
     return msg
 
