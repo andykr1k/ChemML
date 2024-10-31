@@ -2,8 +2,9 @@ import re
 import itertools
 from collections import Counter
 import csv
-import requests 
+import requests
 from bs4 import BeautifulSoup
+import os
 
 group_3d = ['Ti', 'Co', 'Fe', 'Co', 'Cu', 'Mn', 'Ni']
 group_5d = ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir']
@@ -71,6 +72,7 @@ def read_file_exclude_first_line(file_path):
         lines = file.readlines()[1:]
     return [line.strip() for line in lines]
 
+
 poscar_start = '''Titanium cobalt boride (3/5/2)
 1.0
         8.4890003204         0.0000000000         0.0000000000
@@ -119,12 +121,14 @@ def generate_cif_from_poscar(poscar):
 
     return response.text
 
+
 def createCombinations(formula):
     res = parse_formula(formula)
     combinations_per_element = []
     for idx, (element, count) in enumerate(res):
         is_first_element = (idx == 0)
-        element_combinations = get_combinations(element, count, is_first_element)
+        element_combinations = get_combinations(
+            element, count, is_first_element)
         combinations_per_element.append(element_combinations)
     all_formula_combinations = list(
         itertools.product(*combinations_per_element))
@@ -134,12 +138,16 @@ def createCombinations(formula):
     unique_formulas = set()
     for formula in structured_formula_combinations:
         unique_formulas.add(formula)
-    with open('./output/structured_formula_combinations.csv', mode='w', newline='') as file:
+    os.makedirs('./output', exist_ok=True)
+    file_name = formula + '_structured_formula_combinations.csv'
+    with open('./output/'+file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Formula'])
         for formula in unique_formulas:
             writer.writerow([formula])
-    print(f"Saved {len(unique_formulas)} unique formulas to structured_formula_combinations.csv")
+    msg = f"Saved {len(unique_formulas)} unique formulas to " + file_name + " in output folder!"
+    print(msg)
+    return msg
 
 def createPOSCARs(original_poscar_file, combinations_file):
     combinations = read_file_exclude_first_line(combinations_file)
@@ -155,8 +163,9 @@ def createPOSCARs(original_poscar_file, combinations_file):
         file_path = './output/' + formula + " POSCAR"
         with open(file_path, 'w') as file:
             file.write(new_poscar)
-
-        print(f"Textarea content has been saved to {file_path}")
+    msg = f"Saved {len(parsed_formula)} POSCARs to output folder!"
+    print(msg)
+    return msg
 
 def generateCIFs(formula, poscar):
     res = generate_cif_from_poscar(poscar)
@@ -185,10 +194,10 @@ def generateCIFs(formula, poscar):
 
 
 # Process:
-### Step 1: Create all formulas
-### Step 2: Create all poscars
-### Step 3: Generate CIFs files from poscars
-### Step 4: Featurize with jarvis using cif files
+# Step 1: Create all formulas
+# Step 2: Create all poscars
+# Step 3: Generate CIFs files from poscars
+# Step 4: Featurize with jarvis using cif files
 
 # Outputs:
-### CSV File with all correct records from ICSD, CIFs and Jarvis Features
+# CSV File with all correct records from ICSD, CIFs and Jarvis Features
