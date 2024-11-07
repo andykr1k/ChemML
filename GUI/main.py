@@ -265,7 +265,5 @@ if __name__ == "__main__":
     chemmlPage = ChemMLPage()
     stacked_widget.addWidget(homePage)
     stacked_widget.addWidget(chemmlPage)
-    stacked_widget.setFixedWidth(800)
-    stacked_widget.setFixedHeight(600)
     stacked_widget.show()
     sys.exit(app.exec_())
