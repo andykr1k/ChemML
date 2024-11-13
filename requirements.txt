@@ -64,3 +64,4 @@ beautifulsoup4
 requests
 PyQt5
 fbs
+statsmodels
