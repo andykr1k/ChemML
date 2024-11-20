@@ -2,3 +2,4 @@ Data/*.csv
 env/
 *.png
 output
+!Models/outputs/*
