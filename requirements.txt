@@ -65,3 +65,4 @@ requests
 PyQt5
 fbs
 statsmodels
+graphviz
